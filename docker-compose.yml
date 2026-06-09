@@ -1,0 +1,50 @@
+version: '3.8'
+
+services:
+  db:
+    image: mysql:8.0
+    container_name: edechets_db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password_pfe
+      MYSQL_DATABASE: gestion_dechets_medicaux
+    ports:
+      - "3307:3306" # On expose sur le port 3307 de la machine pour ne pas créer de conflit avec XAMPP (qui utilise 3306)
+    volumes:
+      - db_data:/var/lib/mysql
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql # Initialise la BDD automatiquement au premier lancement
+
+  backend:
+    build: ./backend
+    container_name: edechets_backend
+    ports:
+      - "5000:5000"
+    environment:
+      - PORT=5000
+      - DB_HOST=db
+      - DB_USER=root
+      - DB_PASSWORD=root_password_pfe
+      - DB_NAME=gestion_dechets_medicaux
+      - JWT_SECRET=super_secret_jwt_key_pour_le_pfe_2026
+    depends_on:
+      db:
+        condition: service_started
+
+  ai:
+    build: ./ai
+    container_name: edechets_ai
+    ports:
+      - "5001:5001"
+
+  frontend:
+    build: ./frontend
+    container_name: edechets_frontend
+    ports:
+      - "5173:5173"
+    environment:
+      - NODE_ENV=development
+    depends_on:
+      - backend
+      - ai
+
+volumes:
+  db_data:
