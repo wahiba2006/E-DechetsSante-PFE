@@ -3,7 +3,6 @@ node_modules/
 .npm/
 
 # Fichiers d'environnement
-.env
 .env.local
 
 # Python / IA
