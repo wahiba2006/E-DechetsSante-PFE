@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS users (
 
 -- Insertion du compte Administrateur par défaut (mot de passe: password123)
 INSERT INTO users (nom, prenom, email, password, role) 
-VALUES ('Admin', 'Principal', 'admin@hopital.com', '$2b$10$1JJouUUlhsuEWREns6IkoO4F.hsLDPfoi1iat7zAv1Sz0S8mM11jG', 'Administrateur') 
+VALUES ('Admin', 'Principal', 'admin@hopital.com', '$2b$10$K83SNBWC9YLWfeliyLIa3uSBczzoKPmWINGagJT9iKnuFIAQ30q9C', 'Administrateur')
 ON DUPLICATE KEY UPDATE email=email;
 
 -- Table des déchets
