@@ -8,6 +8,7 @@ const Predictions = () => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
   const [user, setUser] = useState(null);
+  const [selectedDayIndex, setSelectedDayIndex] = useState(0);
 
   useEffect(() => {
     const userData = localStorage.getItem('user');
@@ -104,8 +105,13 @@ const Predictions = () => {
                 {predictions.map((p, index) => {
                   const heightPercent = (p.total_kg / maxKg) * 100;
                   const isHigh = p.total_kg > 80;
+                  const isSelected = selectedDayIndex === index;
                   return (
-                    <div key={index} style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1 }}>
+                    <div 
+                      key={index} 
+                      style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', flex: 1, cursor: 'pointer', opacity: isSelected ? 1 : 0.6 }}
+                      onClick={() => setSelectedDayIndex(index)}
+                    >
                       <div style={{ fontSize: '0.78rem', fontWeight: '700', marginBottom: '6px', color: isHigh ? 'var(--danger)' : 'var(--primary)' }}>
                         {p.total_kg} kg
                       </div>
@@ -124,20 +130,27 @@ const Predictions = () => {
 
               {/* Jours */}
               <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '10px', gap: '10px' }}>
-                {predictions.map((p, index) => (
-                  <div key={index} style={{ flex: 1, textAlign: 'center', fontSize: '0.82rem', color: 'var(--text-muted)', fontWeight: '500' }}>
-                    {p.jour}
-                  </div>
-                ))}
+                {predictions.map((p, index) => {
+                  const isSelected = selectedDayIndex === index;
+                  return (
+                    <div 
+                      key={index} 
+                      onClick={() => setSelectedDayIndex(index)}
+                      style={{ flex: 1, textAlign: 'center', fontSize: '0.85rem', color: isSelected ? 'var(--primary)' : 'var(--text-muted)', fontWeight: isSelected ? '800' : '500', cursor: 'pointer' }}
+                    >
+                      {p.jour}
+                    </div>
+                  );
+                })}
               </div>
 
               {/* Détails par service */}
               <div style={{ marginTop: '2.5rem' }}>
                 <h4 style={{ marginBottom: '1rem', color: 'var(--text-main)', fontSize: '0.95rem' }}>
-                  Détails par service — Lundi :
+                  Détails par service — {predictions[selectedDayIndex].jour} :
                 </h4>
                 <div style={{ display: 'flex', gap: '12px', flexWrap: 'wrap' }}>
-                  {Object.entries(predictions[0].details).map(([service, kg]) => (
+                  {Object.entries(predictions[selectedDayIndex].details).map(([service, kg]) => (
                     <div key={service} style={{
                       background: 'var(--bg-card-alt)',
                       padding: '14px 20px',
